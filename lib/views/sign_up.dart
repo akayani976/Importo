@@ -3,9 +3,16 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:importo/utilities/common_methods.dart';
 import 'package:importo/widgets/buttons.dart';
+import 'package:velocity_x/velocity_x.dart';
+import 'dart:convert';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'config.dart';
 
 import 'log_in.dart';
 import 'selection_page.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -16,6 +23,35 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   String dropdownValue = 'Buyer';
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController roleontroller = TextEditingController();
+  bool isNotVallidate = false;
+
+  void registerUSer() async {
+    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      var regBody = {
+        "email": emailController.text,
+        "password": passwordController.text
+      };
+      var response = await http.post(Uri.parse(registration),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(regBody));
+      var jsonResponse = jsonDecode(response.body);
+      print(jsonResponse['status']);
+      if (jsonResponse['status']) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LogInPage()));
+      } else {
+        print("SomeThing Went Wrong");
+      }
+    } else {
+      setState(() {
+        isNotVallidate = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +79,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: const Color.fromARGB(255, 65, 193, 186)),
               ),
               Gap(HelperMethods().getMyDynamicHeight(130)),
-              const TextField(
+              TextField(
+                controller: usernameController,
                 decoration: InputDecoration(hintText: 'Enter username'),
               ),
-              const TextField(
+              TextField(
+                controller: emailController,
                 decoration: InputDecoration(hintText: 'Enter email'),
               ),
               Gap(HelperMethods().getMyDynamicHeight(30)),
@@ -54,7 +92,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: DropdownButton<String>(
                   // style: TextStyle(font: 10),
                   hint: const Text('Select a role'),
-
+                  //this controller needs to be set
                   dropdownColor: const Color.fromARGB(255, 65, 193, 186),
                   items: <String>['Buyer', 'Seller', 'Transporter']
                       .map<DropdownMenuItem<String>>((String value) {
@@ -74,14 +112,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
               ),
-              const TextField(
+              TextField(
+                controller: passwordController,
                 decoration: InputDecoration(hintText: 'Create your password'),
               ),
               Gap(HelperMethods().getMyDynamicHeight(100)),
               GestureDetector(
-                onTap: () {
-                  Get.to(() => const SelectionPage());
-                },
+                onTap: () => {
+                  registerUSer()
+                }, //backend function is called for post http request
                 child: Button(
                     height: HelperMethods().getMyDynamicHeight(195),
                     width: HelperMethods().getMyDynamicWidth(1080),

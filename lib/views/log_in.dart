@@ -6,9 +6,52 @@ import 'package:importo/utilities/size_config.dart';
 import 'package:importo/views/buyers_homepage.dart';
 import 'package:importo/views/sign_up.dart';
 import 'package:importo/widgets/buttons.dart';
+import 'package:http/http.dart' as http;
+import 'config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
-class LogInPage extends StatelessWidget {
+class LogInPage extends StatefulWidget {
+  @override
+  LogInPageState createState() => LogInPageState();
   const LogInPage({super.key});
+}
+
+class LogInPageState extends State<LogInPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool _isNotValidate = false;
+  late SharedPreferences prefs;
+  @override
+  void initState() {
+    super.initState();
+    initSharedPref();
+  }
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  void loginUser() async {
+    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      var reqBody = {
+        "email": emailController.text,
+        "password": passwordController.text
+      };
+      var response = await http.post(Uri.parse(login),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(reqBody));
+      var jsonResponse = jsonDecode(response.body);
+      if (jsonResponse['status']) {
+        var myToken = jsonResponse['token'];
+        prefs.setString('token', myToken);
+        //routing needs to be done
+        //Navigator.push(context, MaterialPageRoute(builder: (context)=>BuyerHomePage(token: myToken)));
+      } else {
+        print('Something went wrong');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,17 +79,25 @@ class LogInPage extends StatelessWidget {
                   color: const Color.fromARGB(255, 65, 193, 186)),
             ),
             Gap(HelperMethods().getMyDynamicHeight(250)),
-            const TextField(
-              decoration: InputDecoration(hintText: 'Enter your phone number'),
+            // i removed const keyword form every text field because it was giving error
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(hintText: 'Enter your Email'),
             ),
-            const TextField(
+            TextField(
+              controller: passwordController,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(hintText: 'Create your password'),
-            ),
+            ), //add error msg errorText: _isNotValidate ? "Enter Proper Info" : null,
             Gap(HelperMethods().getMyDynamicHeight(100)),
             GestureDetector(
               onTap: () {
-                Get.to(() => const BuyerHomePage());
+                loginUser();
               },
+              // onTap: () {
+              // Get.to(() => const BuyerHomePage());
+              //},
               child: Button(
                   height: HelperMethods().getMyDynamicHeight(195),
                   width: HelperMethods().getMyDynamicWidth(1080),
