@@ -5,6 +5,8 @@ import 'package:importo/utilities/common_methods.dart';
 import 'package:importo/views/bids_list.dart';
 import 'package:importo/widgets/buttons.dart';
 
+import 'log_in.dart';
+
 class BuyerHomePage extends StatelessWidget {
   const BuyerHomePage({super.key});
 
@@ -14,8 +16,9 @@ class BuyerHomePage extends StatelessWidget {
         body: Column(
       children: [
         Container(
-          height: HelperMethods().getMyDynamicHeight(290),
+          height: HelperMethods().getMyDynamicHeight(310),
           padding: EdgeInsets.only(
+              top: Get.height * 0.018,
               left: HelperMethods().getMyDynamicHeight(50),
               right: HelperMethods().getMyDynamicHeight(50)),
           color: const Color.fromARGB(255, 40, 157, 210),
@@ -50,11 +53,16 @@ class BuyerHomePage extends StatelessWidget {
                 ],
               ),
               Gap(HelperMethods().getMyDynamicWidth(215)),
-              Column(
-                children: [
-                  Gap(HelperMethods().getMyDynamicWidth(120)),
-                  const Icon(IconData(0xe3b3, fontFamily: 'MaterialIcons')),
-                ],
+              GestureDetector(
+                onTap: () {
+                  Get.offAll(() => const LogInPage());
+                },
+                child: Column(
+                  children: [
+                    Gap(HelperMethods().getMyDynamicWidth(120)),
+                    const Icon(IconData(0xe3b3, fontFamily: 'MaterialIcons')),
+                  ],
+                ),
               ),
             ],
           ),
