@@ -22,6 +22,8 @@ class LogInPageState extends State<LogInPage> {
   TextEditingController passwordController = TextEditingController();
   bool _isNotValidate = false;
   late SharedPreferences prefs;
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -81,20 +83,52 @@ class LogInPageState extends State<LogInPage> {
               ),
               Gap(HelperMethods().getMyDynamicHeight(250)),
               // i removed const keyword form every text field because it was giving error
-              TextField(
-                controller: emailController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(hintText: 'Enter your Email'),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email can not be empty';
+                        }
+                        if (!RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                      controller: emailController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(hintText: 'Enter your Email'),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length <= 6) {
+                          return 'Length can not be less than 6';
+                        }
+                        return null;
+                      },
+                      obscureText: true,
+                      controller: passwordController,
+                      keyboardType: TextInputType.text,
+                      decoration:
+                          InputDecoration(hintText: 'Enter your password'),
+                    ), //add error msg errorText: _isNotValidate ? "Enter Proper Info" : null,
+                  ],
+                ),
               ),
-              TextField(
-                controller: passwordController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(hintText: 'Create your password'),
-              ), //add error msg errorText: _isNotValidate ? "Enter Proper Info" : null,
+
               Gap(HelperMethods().getMyDynamicHeight(100)),
               GestureDetector(
                 onTap: () {
-                  loginUser();
+                  if (_formKey.currentState!.validate()) {
+                    loginUser();
+                  }
                 },
                 // onTap: () {
                 // Get.to(() => const BuyerHomePage());
