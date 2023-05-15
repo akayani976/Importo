@@ -34,23 +34,46 @@ class _SignUpPageState extends State<SignUpPage> {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       var regBody = {
         "email": emailController.text,
+        "username": usernameController.text,
         "password": passwordController.text
       };
-      var response = await http.post(Uri.parse(registration),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(regBody));
-      var jsonResponse = jsonDecode(response.body);
-      print(jsonResponse['status']);
-      if (jsonResponse['status']) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LogInPage()));
-      } else {
-        print("SomeThing Went Wrong");
+      try {
+        print('trying to register user');
+        var response = await http.post(Uri.parse(registration),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode(regBody));
+        var jsonResponse = jsonDecode(response.body);
+        print(jsonResponse);
+        if (jsonResponse['status']) {
+          Get.snackbar(
+            "Success",
+            "User registration was successful. Go back to sign in!",
+            icon: Icon(Icons.check_box, color: Colors.green),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          setState(() {
+            emailController.clear();
+            usernameController.clear();
+            passwordController.clear();
+          });
+        } else {
+          Get.snackbar(
+            "Registration Failed",
+            "Something went wrong",
+            icon: Icon(Icons.warning, color: Colors.red),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          print('Something went wrong');
+        }
+      } catch (e) {
+        print('Registration Failed');
+        Get.snackbar(
+          "Error",
+          "Something went wrong",
+          icon: Icon(Icons.warning, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
-    } else {
-      setState(() {
-        isNotVallidate = true;
-      });
     }
   }
 

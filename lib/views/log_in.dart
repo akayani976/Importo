@@ -63,6 +63,7 @@ class LogInPageState extends State<LogInPage> {
           print('Something went wrong');
         }
       } catch (e) {
+        print('Login Failed');
         Get.snackbar(
           "Error",
           "Something went wrong",
