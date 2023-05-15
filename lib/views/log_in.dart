@@ -57,63 +57,65 @@ class LogInPageState extends State<LogInPage> {
   Widget build(BuildContext context) {
     AppLayout().init(context);
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(
-            left: HelperMethods().getMyDynamicWidth(30),
-            right: HelperMethods().getMyDynamicWidth(30)),
-        child: Column(
-          children: [
-            Gap(HelperMethods().getMyDynamicHeight(150)),
-            SizedBox(
-                height: HelperMethods().getMyDynamicHeight(800),
-                width: HelperMethods().getMyDynamicWidth(1080),
-                child: const Image(image: AssetImage('assets/importo.png'))),
-            Text(
-              'Login to the Importo market!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  wordSpacing: 3,
-                  fontWeight: FontWeight.bold,
-                  fontSize: HelperMethods().getMyDynamicFontSize(25),
-                  color: const Color.fromARGB(255, 65, 193, 186)),
-            ),
-            Gap(HelperMethods().getMyDynamicHeight(250)),
-            // i removed const keyword form every text field because it was giving error
-            TextField(
-              controller: emailController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(hintText: 'Enter your Email'),
-            ),
-            TextField(
-              controller: passwordController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(hintText: 'Create your password'),
-            ), //add error msg errorText: _isNotValidate ? "Enter Proper Info" : null,
-            Gap(HelperMethods().getMyDynamicHeight(100)),
-            GestureDetector(
-              onTap: () {
-                loginUser();
-              },
-              // onTap: () {
-              // Get.to(() => const BuyerHomePage());
-              //},
-              child: Button(
-                  height: HelperMethods().getMyDynamicHeight(195),
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(
+              left: HelperMethods().getMyDynamicWidth(30),
+              right: HelperMethods().getMyDynamicWidth(30)),
+          child: Column(
+            children: [
+              Gap(HelperMethods().getMyDynamicHeight(150)),
+              SizedBox(
+                  height: HelperMethods().getMyDynamicHeight(800),
                   width: HelperMethods().getMyDynamicWidth(1080),
-                  text: 'Start trading'),
-            ),
-            Gap(HelperMethods().getMyDynamicHeight(50)),
-            GestureDetector(
-              onTap: () {
-                Get.to(() => const SignUpPage());
-              },
-              child: const Text(
-                'Not part of the Importo market? SignUp here!',
-                style: TextStyle(color: Color.fromARGB(255, 40, 157, 210)),
+                  child: const Image(image: AssetImage('assets/importo.png'))),
+              Text(
+                'Login to the Importo market!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    wordSpacing: 3,
+                    fontWeight: FontWeight.bold,
+                    fontSize: HelperMethods().getMyDynamicFontSize(25),
+                    color: const Color.fromARGB(255, 65, 193, 186)),
               ),
-            ),
-          ],
+              Gap(HelperMethods().getMyDynamicHeight(250)),
+              // i removed const keyword form every text field because it was giving error
+              TextField(
+                controller: emailController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(hintText: 'Enter your Email'),
+              ),
+              TextField(
+                controller: passwordController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(hintText: 'Create your password'),
+              ), //add error msg errorText: _isNotValidate ? "Enter Proper Info" : null,
+              Gap(HelperMethods().getMyDynamicHeight(100)),
+              GestureDetector(
+                onTap: () {
+                  loginUser();
+                },
+                // onTap: () {
+                // Get.to(() => const BuyerHomePage());
+                //},
+                child: Button(
+                    height: HelperMethods().getMyDynamicHeight(195),
+                    width: HelperMethods().getMyDynamicWidth(1080),
+                    text: 'Start trading'),
+              ),
+              Gap(HelperMethods().getMyDynamicHeight(50)),
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => const SignUpPage());
+                },
+                child: const Text(
+                  'Not part of the Importo market? SignUp here!',
+                  style: TextStyle(color: Color.fromARGB(255, 40, 157, 210)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
