@@ -35,22 +35,40 @@ class LogInPageState extends State<LogInPage> {
   }
 
   void loginUser() async {
+    print('trying to login');
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       var reqBody = {
         "email": emailController.text,
         "password": passwordController.text
       };
-      var response = await http.post(Uri.parse(login),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(reqBody));
-      var jsonResponse = jsonDecode(response.body);
-      if (jsonResponse['status']) {
-        var myToken = jsonResponse['token'];
-        prefs.setString('token', myToken);
-        //routing needs to be done
-        //Navigator.push(context, MaterialPageRoute(builder: (context)=>BuyerHomePage(token: myToken)));
-      } else {
-        print('Something went wrong');
+      try {
+        var response = await http.post(Uri.parse(login),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode(reqBody));
+        var jsonResponse = jsonDecode(response.body);
+        print(jsonResponse);
+        if (jsonResponse['status']) {
+          var myToken = jsonResponse['token'];
+          prefs.setString('token', myToken);
+          //routing needs to be done
+          //Navigator.push(context, MaterialPageRoute(builder: (context)=>BuyerHomePage(token: myToken)));
+          Get.to(() => BuyerHomePage());
+        } else {
+          Get.snackbar(
+            "Login Failed",
+            "Something went wrong",
+            icon: Icon(Icons.warning, color: Colors.red),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          print('Something went wrong');
+        }
+      } catch (e) {
+        Get.snackbar(
+          "Error",
+          "Something went wrong",
+          icon: Icon(Icons.warning, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     }
   }
@@ -108,7 +126,7 @@ class LogInPageState extends State<LogInPage> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
                         }
-                        if (value.length <= 6) {
+                        if (value.length < 6) {
                           return 'Length can not be less than 6';
                         }
                         return null;
