@@ -28,6 +28,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController roleontroller = TextEditingController();
   bool isNotVallidate = false;
+  final _formKey = GlobalKey<FormState>();
 
   void registerUSer() async {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
@@ -79,47 +80,96 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: const Color.fromARGB(255, 65, 193, 186)),
               ),
               Gap(HelperMethods().getMyDynamicHeight(130)),
-              TextField(
-                controller: usernameController,
-                decoration: InputDecoration(hintText: 'Enter username'),
-              ),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(hintText: 'Enter email'),
-              ),
-              Gap(HelperMethods().getMyDynamicHeight(30)),
-              SizedBox(
-                child: DropdownButton<String>(
-                  // style: TextStyle(font: 10),
-                  hint: const Text('Select a role'),
-                  //this controller needs to be set
-                  dropdownColor: const Color.fromARGB(255, 65, 193, 186),
-                  items: <String>['Buyer', 'Seller', 'Transporter']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 20),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Username can not be empty';
+                        }
+                        return null;
+                      },
+                      controller: usernameController,
+                      decoration: InputDecoration(hintText: 'Enter username'),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email can not be empty';
+                        }
+                        if (!RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                      controller: emailController,
+                      decoration: InputDecoration(hintText: 'Enter email'),
+                    ),
+                    Gap(HelperMethods().getMyDynamicHeight(30)),
+                    SizedBox(
+                      child: DropdownButtonFormField<String>(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please select a role';
+                          }
+
+                          return null;
+                        },
+                        // style: TextStyle(font: 10),
+                        hint: const Text('Select a role'),
+                        value: dropdownValue,
+
+                        //this controller needs to be set
+                        dropdownColor: const Color.fromARGB(255, 65, 193, 186),
+                        items: <String>['Buyer', 'Seller', 'Transporter']
+                            .map<DropdownMenuItem<String>>(
+                          (String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            );
+                          },
+                        ).toList(),
+                        // Step 5.
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                        },
                       ),
-                    );
-                  }).toList(),
-                  // Step 5.
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password can not be empty';
+                        }
+                        if (value.length < 6) {
+                          return 'Password can not be less than 6 characters';
+                        }
+                        return null;
+                      },
+                      controller: passwordController,
+                      obscureText: true,
+                      keyboardType: TextInputType.text,
+                      decoration:
+                          InputDecoration(hintText: 'Create your password'),
+                    ),
+                  ],
                 ),
-              ),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(hintText: 'Create your password'),
               ),
               Gap(HelperMethods().getMyDynamicHeight(100)),
               GestureDetector(
-                onTap: () => {
-                  registerUSer()
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {
+                    registerUSer();
+                  }
                 }, //backend function is called for post http request
                 child: Button(
                     height: HelperMethods().getMyDynamicHeight(195),
