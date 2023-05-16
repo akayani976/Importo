@@ -58,7 +58,7 @@ class _BidsListPageState extends State<BidsListPage> {
       Get.snackbar(
         "Error",
         "Something went wrong",
-        icon: Icon(Icons.warning, color: Colors.red),
+        icon: const Icon(Icons.warning, color: Colors.red),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
@@ -79,10 +79,10 @@ class _BidsListPageState extends State<BidsListPage> {
     AppLayout().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bids'),
+        title: const Text('Bids'),
       ),
       body: _bidsList.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'No bids to Show',
                 style: TextStyle(
@@ -102,6 +102,7 @@ class _BidsListPageState extends State<BidsListPage> {
                     border: Border.all(color: Colors.black),
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
                         height: HelperMethods().getMyDynamicHeight(250),
@@ -112,12 +113,22 @@ class _BidsListPageState extends State<BidsListPage> {
                           bottom: HelperMethods().getMyDynamicHeight(40),
                         ),
                         decoration: BoxDecoration(
-                          color: _bidsList[index].category == 'Thread'
-                              ? Colors.amberAccent
-                              : Colors.grey,
+                          color: Colors.grey,
                           borderRadius: BorderRadius.circular(
                             HelperMethods().getMyDynamicHeight(16),
                           ),
+                          image: DecorationImage(
+                              image: _bidsList[index].category == 'Thread'
+                                  ? const AssetImage('assets/thread.jpg')
+                                  : _bidsList[index].category == 'Cotton Yarn'
+                                      ? const AssetImage(
+                                          'assets/cotton_yarn.jpg')
+                                      : _bidsList[index].category ==
+                                              'Finished Product'
+                                          ? const AssetImage('assets/shirt.jpg')
+                                          : const AssetImage(
+                                              'assets/importo.png'),
+                              fit: BoxFit.fill),
                         ),
                       ),
                       Column(
@@ -125,7 +136,7 @@ class _BidsListPageState extends State<BidsListPage> {
                         children: [
                           Container(
                             margin: EdgeInsets.only(
-                              top: HelperMethods().getMyDynamicHeight(50),
+                              top: HelperMethods().getMyDynamicHeight(30),
                               left: HelperMethods().getMyDynamicWidth(20),
                             ),
                             child: Text('Quantity: ' +
@@ -133,7 +144,7 @@ class _BidsListPageState extends State<BidsListPage> {
                           ),
                           Container(
                             margin: EdgeInsets.only(
-                              top: HelperMethods().getMyDynamicHeight(40),
+                              top: HelperMethods().getMyDynamicHeight(30),
                               left: HelperMethods().getMyDynamicWidth(20),
                             ),
                             child: Text(
@@ -141,7 +152,7 @@ class _BidsListPageState extends State<BidsListPage> {
                           ),
                           Container(
                             margin: EdgeInsets.only(
-                              top: HelperMethods().getMyDynamicHeight(40),
+                              top: HelperMethods().getMyDynamicHeight(30),
                               left: HelperMethods().getMyDynamicWidth(20),
                             ),
                             child: Text('Location: ' +
@@ -149,7 +160,7 @@ class _BidsListPageState extends State<BidsListPage> {
                           ),
                           Container(
                             margin: EdgeInsets.only(
-                              top: HelperMethods().getMyDynamicHeight(40),
+                              top: HelperMethods().getMyDynamicHeight(30),
                               left: HelperMethods().getMyDynamicWidth(20),
                             ),
                             child: Text('Description: ' +
