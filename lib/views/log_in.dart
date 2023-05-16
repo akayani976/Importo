@@ -23,6 +23,7 @@ class LogInPageState extends State<LogInPage> {
   bool _isNotValidate = false;
   late SharedPreferences prefs;
   final _formKey = GlobalKey<FormState>();
+  late final token;
 
   @override
   void initState() {
@@ -49,10 +50,13 @@ class LogInPageState extends State<LogInPage> {
         print(jsonResponse);
         if (jsonResponse['status']) {
           var myToken = jsonResponse['token'];
+          token = myToken;
           prefs.setString('token', myToken);
           //routing needs to be done
           //Navigator.push(context, MaterialPageRoute(builder: (context)=>BuyerHomePage(token: myToken)));
-          Get.to(() => BuyerHomePage());
+          Get.to(() => BuyerHomePage(
+                token: token,
+              ));
         } else {
           Get.snackbar(
             "Login Failed",
