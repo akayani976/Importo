@@ -244,7 +244,6 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                     GestureDetector(
                       onTap: () {
                         createBid();
-                        Get.to(() => const BidsListPage());
                       },
                       child: Container(
                         margin: EdgeInsets.only(
