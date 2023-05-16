@@ -10,6 +10,7 @@ import 'package:importo/views/config.dart';
 import 'package:importo/widgets/buttons.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import '../utilities/user.dart';
 import 'log_in.dart';
 
 class BuyerHomePage extends StatefulWidget {
@@ -22,7 +23,7 @@ class BuyerHomePage extends StatefulWidget {
 class _BuyerHomePageState extends State<BuyerHomePage> {
   // late String userId;
   /// This userId is hard coded for now. Should be the Id of the user which is signed in
-  String userId = '6462a3a3d2600e2433b1689e';
+  String userId = MyUser.USERID;
 
   TextEditingController location = TextEditingController();
   TextEditingController quatity = TextEditingController();

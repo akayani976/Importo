@@ -6,6 +6,7 @@ import 'package:importo/Model/BidModel.dart';
 import 'package:importo/utilities/common_methods.dart';
 import 'package:importo/utilities/size_config.dart';
 import 'package:http/http.dart' as http;
+import 'package:importo/utilities/user.dart';
 import 'config.dart';
 
 class BidsListPage extends StatefulWidget {
@@ -64,7 +65,7 @@ class _BidsListPageState extends State<BidsListPage> {
   }
 
   getData() async {
-    await getBidsByUser('6462a3a3d2600e2433b1689e');
+    await getBidsByUser(MyUser.USERID);
   }
 
   @override
