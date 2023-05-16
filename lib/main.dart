@@ -10,6 +10,6 @@ void main() {
     theme: ThemeData(
       primaryColor: const Color.fromARGB(255, 27, 156, 207),
     ),
-    home: const BidsListPage(),
+    home: const LogInPage(),
   ));
 }

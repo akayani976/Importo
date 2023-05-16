@@ -20,12 +20,16 @@ class BuyerHomePage extends StatefulWidget {
 }
 
 class _BuyerHomePageState extends State<BuyerHomePage> {
-  late String userId;
+  // late String userId;
+  /// This userId is hard coded for now. Should be the Id of the user which is signed in
+  String userId = '6462a3a3d2600e2433b1689e';
+
   TextEditingController location = TextEditingController();
   TextEditingController quatity = TextEditingController();
   TextEditingController budget = TextEditingController();
   TextEditingController description = TextEditingController();
   String category = 'Cotton Yarn';
+
   List? items;
 
   @override
@@ -92,7 +96,11 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                               HelperMethods().getMyDynamicHeight(15)),
                           decoration: BoxDecoration(
                               color: const Color.fromARGB(255, 40, 157, 210),
-                              border: Border.all(color: Colors.black, width: 2),
+                              border: Border.all(
+                                  color: category == 'Cotton Yarn'
+                                      ? Colors.amberAccent
+                                      : Colors.black,
+                                  width: 5),
                               borderRadius: BorderRadius.circular(
                                   HelperMethods().getMyDynamicHeight(50))),
                           child: Column(
@@ -135,7 +143,11 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                               HelperMethods().getMyDynamicHeight(15)),
                           decoration: BoxDecoration(
                               color: const Color.fromARGB(255, 40, 157, 210),
-                              border: Border.all(color: Colors.black, width: 2),
+                              border: Border.all(
+                                  color: category == 'Thread'
+                                      ? Colors.amberAccent
+                                      : Colors.black,
+                                  width: 5),
                               borderRadius: BorderRadius.circular(
                                   HelperMethods().getMyDynamicHeight(50))),
                           child: Column(
@@ -178,12 +190,18 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                               HelperMethods().getMyDynamicHeight(15)),
                           decoration: BoxDecoration(
                               color: const Color.fromARGB(255, 40, 157, 210),
-                              border: Border.all(color: Colors.black, width: 2),
+                              border: Border.all(
+                                  color: category == 'Finished Products'
+                                      ? Colors.amberAccent
+                                      : Colors.black,
+                                  width: 5),
                               borderRadius: BorderRadius.circular(
                                   HelperMethods().getMyDynamicHeight(50))),
                           child: GestureDetector(
                             onTap: () {
-                              category = 'Finished Products';
+                              setState(() {
+                                category = 'Finished Products';
+                              });
                             },
                             child: Column(
                               children: [
