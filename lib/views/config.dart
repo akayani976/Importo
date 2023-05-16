@@ -3,4 +3,4 @@ final registration = url + "register";
 final login = url + 'login';
 final createbid = url + 'createbid';
 final getbid = url + 'getbid';
-//final deletebid= url + 'deletebid';
+final deletebid = url + 'deletebid';

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:importo/Model/BidModel.dart';
 import 'package:importo/utilities/common_methods.dart';
 import 'package:importo/utilities/size_config.dart';
@@ -32,8 +33,34 @@ class _BidsListPageState extends State<BidsListPage> {
 
     ///Now the bids list is populated. now we have to show these
     // print(_bidsList[0].userId);
+  }
 
-    // items = jsonResponse['success'];
+  deleteSingleBid(id) async {
+    print('deleting bid');
+    var regBody = {"id": id};
+    var response = await http.post(Uri.parse(deletebid),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(regBody));
+    print(response.body);
+    var jsonResponse = jsonDecode(response.body);
+    if (jsonResponse['status']) {
+      Get.snackbar(
+        "Success",
+        "Bid successfully deleted!",
+        icon: const Icon(Icons.check_box, color: Colors.green),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      setState(() {
+        _bidsList.removeWhere((element) => element.sId == id);
+      });
+    } else {
+      Get.snackbar(
+        "Error",
+        "Something went wrong",
+        icon: Icon(Icons.warning, color: Colors.red),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   getData() async {
@@ -50,84 +77,100 @@ class _BidsListPageState extends State<BidsListPage> {
   Widget build(BuildContext context) {
     AppLayout().init(context);
     return Scaffold(
-      appBar: AppBar(),
-      body: ListView.builder(
-        itemCount: _bidsList.length,
-        itemBuilder: (context, index) {
-          return Container(
-            height: HelperMethods().getMyDynamicHeight(350),
-            margin: EdgeInsets.only(
-              top: HelperMethods().getMyDynamicHeight(20),
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  height: HelperMethods().getMyDynamicHeight(250),
-                  width: HelperMethods().getMyDynamicWidth(250),
+      appBar: AppBar(
+        title: Text('Bids'),
+      ),
+      body: _bidsList.isEmpty
+          ? Center(
+              child: Text(
+                'No bids to Show',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            )
+          : ListView.builder(
+              itemCount: _bidsList.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  height: HelperMethods().getMyDynamicHeight(350),
                   margin: EdgeInsets.only(
-                    left: HelperMethods().getMyDynamicWidth(30),
-                    top: HelperMethods().getMyDynamicHeight(40),
-                    bottom: HelperMethods().getMyDynamicHeight(40),
+                    top: HelperMethods().getMyDynamicHeight(20),
                   ),
                   decoration: BoxDecoration(
-                    color: _bidsList[index].category == 'Thread'
-                        ? Colors.amberAccent
-                        : Colors.grey,
-                    borderRadius: BorderRadius.circular(
-                      HelperMethods().getMyDynamicHeight(16),
-                    ),
+                    border: Border.all(color: Colors.black),
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: HelperMethods().getMyDynamicHeight(50),
-                        left: HelperMethods().getMyDynamicWidth(20),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: HelperMethods().getMyDynamicHeight(250),
+                        width: HelperMethods().getMyDynamicWidth(250),
+                        margin: EdgeInsets.only(
+                          left: HelperMethods().getMyDynamicWidth(30),
+                          top: HelperMethods().getMyDynamicHeight(40),
+                          bottom: HelperMethods().getMyDynamicHeight(40),
+                        ),
+                        decoration: BoxDecoration(
+                          color: _bidsList[index].category == 'Thread'
+                              ? Colors.amberAccent
+                              : Colors.grey,
+                          borderRadius: BorderRadius.circular(
+                            HelperMethods().getMyDynamicHeight(16),
+                          ),
+                        ),
                       ),
-                      child: Text(
-                          'Quantity: ' + _bidsList[index].quantity.toString()),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: HelperMethods().getMyDynamicHeight(40),
-                        left: HelperMethods().getMyDynamicWidth(20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: HelperMethods().getMyDynamicHeight(50),
+                              left: HelperMethods().getMyDynamicWidth(20),
+                            ),
+                            child: Text('Quantity: ' +
+                                _bidsList[index].quantity.toString()),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: HelperMethods().getMyDynamicHeight(40),
+                              left: HelperMethods().getMyDynamicWidth(20),
+                            ),
+                            child: Text(
+                                'Price: ' + _bidsList[index].price.toString()),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: HelperMethods().getMyDynamicHeight(40),
+                              left: HelperMethods().getMyDynamicWidth(20),
+                            ),
+                            child: Text('Location: ' +
+                                _bidsList[index].location.toString()),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: HelperMethods().getMyDynamicHeight(40),
+                              left: HelperMethods().getMyDynamicWidth(20),
+                            ),
+                            child: Text('Description: ' +
+                                _bidsList[index].description.toString()),
+                          ),
+                        ],
                       ),
-                      child:
-                          Text('Price: ' + _bidsList[index].price.toString()),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: HelperMethods().getMyDynamicHeight(40),
-                        left: HelperMethods().getMyDynamicWidth(20),
-                      ),
-                      child: Text(
-                          'Location: ' + _bidsList[index].location.toString()),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: HelperMethods().getMyDynamicHeight(40),
-                        left: HelperMethods().getMyDynamicWidth(20),
-                      ),
-                      child: Text('Description: ' +
-                          _bidsList[index].description.toString()),
-                    ),
-                  ],
-                ),
-                Container(
-                    margin: EdgeInsets.only(
-                      left: HelperMethods().getMyDynamicWidth(180),
-                    ),
-                    child: const Icon(Icons.delete))
-              ],
+                      GestureDetector(
+                        onTap: () async {
+                          await deleteSingleBid(_bidsList[index].sId);
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(
+                              left: HelperMethods().getMyDynamicWidth(180),
+                            ),
+                            child: const Icon(Icons.delete)),
+                      )
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }
