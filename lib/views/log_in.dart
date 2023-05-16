@@ -54,9 +54,7 @@ class LogInPageState extends State<LogInPage> {
           prefs.setString('token', myToken);
           //routing needs to be done
           //Navigator.push(context, MaterialPageRoute(builder: (context)=>BuyerHomePage(token: myToken)));
-          Get.to(() => BuyerHomePage(
-                token: token,
-              ));
+          Get.to(() => BuyerHomePage());
         } else {
           Get.snackbar(
             "Login Failed",
