@@ -232,28 +232,32 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                       ],
                     ),
                     Gap(HelperMethods().getMyDynamicHeight(30)),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: location,
+                      decoration: const InputDecoration(
                         hintText: 'What is your delivery location?',
                       ),
                     ),
                     Gap(HelperMethods().getMyDynamicHeight(30)),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: quatity,
+                      decoration: const InputDecoration(
                         hintText: 'What is the quantity you require?',
                       ),
                     ),
                     Gap(HelperMethods().getMyDynamicHeight(30)),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: budget,
+                      decoration: const InputDecoration(
                         hintText: 'What is your preferred budget?',
                       ),
                     ),
                     Gap(HelperMethods().getMyDynamicHeight(30)),
-                    const TextField(
+                    TextField(
+                      controller: description,
                       maxLines: 5,
                       textAlign: TextAlign.start,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Add a description...',
                       ),
@@ -262,7 +266,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                     GestureDetector(
                       onTap: () {
                         createBid();
-                        Get.to(() => const BidsListPage());
+                        // Get.to(() => const BidsListPage());
                       },
                       child: Container(
                         margin: EdgeInsets.only(
@@ -270,7 +274,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                         child: Button(
                             height: HelperMethods().getMyDynamicHeight(195),
                             width: HelperMethods().getMyDynamicWidth(1080),
-                            text: 'Find Acceptable Bids'),
+                            text: 'Create Bid'),
                       ),
                     )
                   ],
@@ -287,28 +291,48 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
         budget.text.isNotEmpty &&
         description.text.isNotEmpty &&
         category != '') {
-      var regBody = {
-        "userId": userId,
-        "location": location.text,
-        "description": description.text,
-        "quantity": quatity.text,
-        "price": budget.text
-      };
-      var response = await http.post(Uri.parse(createbid),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(regBody));
-      var jsonResponse = jsonDecode(response.body);
-      print(jsonResponse['status']);
-      if (jsonResponse['status']) {
-        location.clear();
-        quatity.clear();
-        budget.clear();
-        description.clear();
-        Navigator.pop(context);
-        getBid(userId);
-      } else {
-        print("SomeThing Went Wrong");
+      print('Creating Bid');
+      try {
+        var regBody = {
+          "userId": userId,
+          "location": location.text,
+          "description": description.text,
+          "quantity": quatity.text,
+          "price": budget.text,
+          "category": category
+        };
+        var response = await http.post(Uri.parse(createbid),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode(regBody));
+        var jsonResponse = jsonDecode(response.body);
+        print(jsonResponse['status']);
+        if (jsonResponse['status']) {
+          print('bid created');
+          Get.snackbar(
+            "Success",
+            "Your bid was successfully created!",
+            icon: const Icon(Icons.check_box, color: Colors.green),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          location.clear();
+          quatity.clear();
+          budget.clear();
+          description.clear();
+          // Navigator.pop(context);
+          // getBid(userId);
+        } else {
+          print("SomeThing Went Wrong");
+        }
+      } catch (e) {
+        print(e);
       }
+    } else {
+      Get.snackbar(
+        "Error",
+        "Please check your data again.",
+        icon: const Icon(Icons.warning, color: Colors.red),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
