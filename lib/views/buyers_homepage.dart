@@ -59,8 +59,6 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
               ),
               ListTile(
                 title: const Text('Your Bids'),
-                contentPadding: EdgeInsets.only(
-                    left: HelperMethods().getMyDynamicWidth(360)),
                 onTap: () {
                   Get.to(() => const BidsListPage());
                 },
@@ -126,7 +124,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                           fit: BoxFit.fill)),
                                 ),
                               ),
-                              Gap(HelperMethods().getMyDynamicHeight(20)),
+                              Gap(HelperMethods().getMyDynamicHeight(15)),
                               Text(
                                 'Cotton Yarn',
                                 style: TextStyle(
@@ -173,7 +171,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                           fit: BoxFit.fill)),
                                 ),
                               ),
-                              Gap(HelperMethods().getMyDynamicHeight(20)),
+                              Gap(HelperMethods().getMyDynamicHeight(15)),
                               Text(
                                 'Thread',
                                 style: TextStyle(
@@ -208,7 +206,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                               children: [
                                 Container(
                                   height:
-                                      HelperMethods().getMyDynamicHeight(120),
+                                      HelperMethods().getMyDynamicHeight(125),
                                   width: HelperMethods().getMyDynamicWidth(125),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(
@@ -218,7 +216,7 @@ class _BuyerHomePageState extends State<BuyerHomePage> {
                                           image: AssetImage('assets/shirt.jpg'),
                                           fit: BoxFit.fill)),
                                 ),
-                                Gap(HelperMethods().getMyDynamicHeight(20)),
+                                Gap(HelperMethods().getMyDynamicHeight(15)),
                                 Text(
                                   'Finished Products',
                                   style: TextStyle(
