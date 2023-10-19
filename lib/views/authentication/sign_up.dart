@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:importo/utilities/common_methods.dart';
+import 'package:importo/views/buyer/buyer_home_bottom_navbar.dart';
+import 'package:importo/views/seller/seller_page_bottom_navbar.dart';
 import 'package:importo/widgets/buttons.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'dart:convert';
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'config.dart';
-
+import '../../utilities/config.dart';
+import 'kyc_page.dart';
 import 'log_in.dart';
-import 'selection_page.dart';
 import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
@@ -26,56 +23,9 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
-  TextEditingController roleontroller = TextEditingController();
   bool isNotVallidate = false;
   final _formKey = GlobalKey<FormState>();
-
-  void registerUSer() async {
-    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      var regBody = {
-        "email": emailController.text,
-        "username": usernameController.text,
-        "password": passwordController.text
-      };
-      try {
-        print('trying to register user');
-        var response = await http.post(Uri.parse(registration),
-            headers: {"Content-Type": "application/json"},
-            body: jsonEncode(regBody));
-        var jsonResponse = jsonDecode(response.body);
-        print(jsonResponse);
-        if (jsonResponse['status']) {
-          Get.snackbar(
-            "Success",
-            "User registration was successful. Go back to sign in!",
-            icon: Icon(Icons.check_box, color: Colors.green),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-          setState(() {
-            emailController.clear();
-            usernameController.clear();
-            passwordController.clear();
-          });
-        } else {
-          Get.snackbar(
-            "Registration Failed",
-            "Something went wrong",
-            icon: Icon(Icons.warning, color: Colors.red),
-            snackPosition: SnackPosition.BOTTOM,
-          );
-          print('Something went wrong');
-        }
-      } catch (e) {
-        print('Registration Failed');
-        Get.snackbar(
-          "Error",
-          "Something went wrong",
-          icon: Icon(Icons.warning, color: Colors.red),
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
-    }
-  }
+  bool isTapped = false;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +65,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         return null;
                       },
                       controller: usernameController,
-                      decoration: InputDecoration(hintText: 'Enter username'),
+                      decoration:
+                          const InputDecoration(hintText: 'Enter username'),
                     ),
                     TextFormField(
                       validator: (value) {
@@ -130,7 +81,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         return null;
                       },
                       controller: emailController,
-                      decoration: InputDecoration(hintText: 'Enter email'),
+                      decoration:
+                          const InputDecoration(hintText: 'Enter email'),
                     ),
                     Gap(HelperMethods().getMyDynamicHeight(30)),
                     SizedBox(
@@ -181,33 +133,50 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: passwordController,
                       obscureText: true,
                       keyboardType: TextInputType.text,
-                      decoration:
-                          InputDecoration(hintText: 'Create your password'),
+                      decoration: const InputDecoration(
+                          hintText: 'Create your password'),
                     ),
                   ],
                 ),
               ),
-              Gap(HelperMethods().getMyDynamicHeight(100)),
+              Gap(
+                HelperMethods().getMyDynamicHeight(100),
+              ),
               GestureDetector(
                 onTap: () {
+                  // setState(() {
+                  //   isTapped = true;
+                  // });
+                  // if (_formKey.currentState!.validate()) {
+                  //   registerUSer();
+                  // }
+                  // setState(() {
+                  //   isTapped = false;
+                  // });
                   if (_formKey.currentState!.validate()) {
-                    registerUSer();
+                    Get.off(() => const SellerPageBottomNavBar());
                   }
                 }, //backend function is called for post http request
                 child: Button(
-                    height: HelperMethods().getMyDynamicHeight(195),
-                    width: HelperMethods().getMyDynamicWidth(1080),
-                    text: 'Become a trader'),
+                  height: 195,
+                  width: 1080,
+                  text: 'Become a trader',
+                  isTapped: isTapped,
+                ),
               ),
               Gap(HelperMethods().getMyDynamicHeight(50)),
               GestureDetector(
                 onTap: () {
-                  Get.to(() => const LogInPage());
+                  Get.off(
+                    () => const LogInPage(),
+                  );
                 },
                 child: const Center(
                   child: Text(
                     'Already an Importo trader? Login here!',
-                    style: TextStyle(color: Color.fromARGB(255, 40, 157, 210)),
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 40, 157, 210),
+                    ),
                   ),
                 ),
               ),
@@ -216,5 +185,70 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  Future<String> getUserId() async {
+    try {
+      var response = await http.get(
+        Uri.parse(getId),
+        headers: {"Content-Type": "application/json"},
+      );
+      var jsonResponse = jsonDecode(response.body);
+      if (jsonResponse['status']) {
+        return jsonResponse['_id'];
+      } else {
+        return 'error';
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  void registerUSer() async {
+    if (emailController.text.trim().isNotEmpty &&
+        passwordController.text.trim().isNotEmpty &&
+        usernameController.text.trim().isNotEmpty &&
+        dropdownValue.isNotEmpty) {
+      var regBody = {
+        "email": emailController.text.trim(),
+        "username": usernameController.text.trim(),
+        "password": passwordController.text,
+        "role": dropdownValue
+      };
+      try {
+        print('regBody = $regBody');
+        var response = await http.post(Uri.parse(registration),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode(regBody));
+        var jsonResponse = jsonDecode(response.body);
+        print("jsonReponse = $jsonResponse");
+        if (jsonResponse['status']) {
+          // String userId = await getUserId();
+          if (dropdownValue.toLowerCase() == 'buyer') {
+            Get.off(
+              () => const BuyerPageBottomNavBar(),
+            );
+          } else {
+            Get.off(
+              () => const KYCPage(),
+            );
+          }
+        } else {
+          Get.snackbar(
+            "Registration Failed",
+            "Something went wrong",
+            icon: const Icon(Icons.warning, color: Colors.red),
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      } catch (e) {
+        Get.snackbar(
+          "Error",
+          "Something went wrong",
+          icon: const Icon(Icons.warning, color: Colors.red),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    }
   }
 }

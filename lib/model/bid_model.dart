@@ -9,16 +9,16 @@ class BidResponseModel {
     if (json['success'] != null) {
       success = <Success>[];
       json['success'].forEach((v) {
-        success!.add(new Success.fromJson(v));
+        success!.add(Success.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    if (this.success != null) {
-      data['success'] = this.success!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+    data['status'] = status;
+    if (success != null) {
+      data['success'] = success!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -62,17 +62,17 @@ class Success {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['userId'] = this.userId;
-    data['location'] = this.location;
-    data['category'] = this.category;
-    data['price'] = this.price;
-    data['quantity'] = this.quantity;
-    data['description'] = this.description;
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
-    data['__v'] = this.iV;
+    final Map<String, dynamic> data = {};
+    data['_id'] = sId;
+    data['userId'] = userId;
+    data['location'] = location;
+    data['category'] = category;
+    data['price'] = price;
+    data['quantity'] = quantity;
+    data['description'] = description;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['__v'] = iV;
     return data;
   }
 }
